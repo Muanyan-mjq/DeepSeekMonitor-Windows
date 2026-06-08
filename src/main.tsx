@@ -52,7 +52,13 @@ type UsageModel = {
 type UsageDay = {
   date: string;
   flashTokens: number;
+  flashCacheHit: number;
+  flashCacheMiss: number;
+  flashResponse: number;
   proTokens: number;
+  proCacheHit: number;
+  proCacheMiss: number;
+  proResponse: number;
   totalTokens: number;
   totalCost: number;
 };
@@ -94,7 +100,13 @@ const recentUsageDays = (days: UsageDay[], count = 7): UsageDay[] => {
       source.get(date) ?? {
         date,
         flashTokens: 0,
+        flashCacheHit: 0,
+        flashCacheMiss: 0,
+        flashResponse: 0,
         proTokens: 0,
+        proCacheHit: 0,
+        proCacheMiss: 0,
+        proResponse: 0,
         totalTokens: 0,
         totalCost: 0,
       }
@@ -444,6 +456,12 @@ function UsageRow({
             <i className={isFlash ? "flash-fill" : "pro-fill"} style={{ width }} />
           </div>
         </div>
+        {data && data.cacheHitTokens + data.cacheMissTokens > 0 && (
+          <span className={`cache-hit-rate ${isFlash ? "flash" : "pro"}`}>
+            缓存命中{" "}
+            {((data.cacheHitTokens / (data.cacheHitTokens + data.cacheMissTokens)) * 100).toFixed(0)}%
+          </span>
+        )}
       </div>
       <div className="usage-price">
         <strong>{cost}</strong>
@@ -462,9 +480,21 @@ function UsageChart({
   state: BalanceState;
   error: string;
 }) {
+  const [hoveredIdx, setHoveredIdx] = React.useState<number | null>(null);
+  const MIN_BAR = 3;
   const days = recentUsageDays(usage?.days ?? []);
-  const max = Math.max(...days.map((day) => day.totalTokens), 1);
-  const total = days.reduce((sum, day) => sum + day.totalTokens, 0);
+  const points = days.map((day) => {
+    // Flash 与 Pro 合并，不分模型
+    const hit = day.flashCacheHit + day.proCacheHit;
+    const miss = day.flashCacheMiss + day.proCacheMiss;
+    const response = day.flashResponse + day.proResponse;
+    return { date: day.date, hit, miss, response, total: hit + miss + response };
+  });
+  const maxVal = Math.max(...points.map((point) => point.total), 1);
+  const sumHit = points.reduce((sum, point) => sum + point.hit, 0);
+  const sumMiss = points.reduce((sum, point) => sum + point.miss, 0);
+  const sumTotal = points.reduce((sum, point) => sum + point.total, 0);
+  const hitRate = sumHit + sumMiss > 0 ? ((sumHit / (sumHit + sumMiss)) * 100).toFixed(0) : "0";
   const placeholder =
     state === "loading"
       ? "查询中…"
@@ -479,22 +509,82 @@ function UsageChart({
       <div className="card-title-row">
         <div className="caption-with-icon">
           <BarChart3 size={16} className="brand-blue" />
-          <span>消耗趋势</span>
+          <span>缓存命中明细</span>
         </div>
-        <span className="chart-total">{state === "ok" ? `合计 ${fmtTokensShort(total)}` : "—"}</span>
+        <span className="chart-total">
+          {state === "ok" ? `命中率 ${hitRate}% · 合计 ${fmtTokensShort(sumTotal)}` : "—"}
+        </span>
       </div>
-      {state === "ok" && days.length > 0 ? (
-        <div className="bars">
-          {days.map((day) => (
-            <div className="bar-column" key={day.date}>
-              <span className="bar-value">{day.totalTokens > 0 ? fmtTokensShort(day.totalTokens) : "0"}</span>
-              <div className="bar-slot">
-                <i style={{ height: `${Math.max(4, (day.totalTokens / max) * 84)}px` }} />
+      {state === "ok" && points.length > 0 ? (
+        <>
+          <div className="bars" onMouseLeave={() => setHoveredIdx(null)}>
+            {points.map((point, idx) => (
+              <div className="bar-column" key={point.date}>
+                {hoveredIdx === idx && point.total > 0 && (
+                  <div
+                    className={`bar-tooltip${
+                      idx <= 1 ? " align-left" : idx >= points.length - 2 ? " align-right" : ""
+                    }`}
+                  >
+                    <div className="bar-tooltip-head">
+                      <span className="bar-tooltip-date">{point.date}</span>
+                      <strong>{fmtInt(point.total)} tokens</strong>
+                    </div>
+                    <span className="bar-tooltip-row">
+                      <i className="dot hit" />输入（命中缓存）
+                      <strong>{fmtInt(point.hit)} tokens</strong>
+                    </span>
+                    <span className="bar-tooltip-row">
+                      <i className="dot miss" />输入（未命中缓存）
+                      <strong>{fmtInt(point.miss)} tokens</strong>
+                    </span>
+                    <span className="bar-tooltip-row">
+                      <i className="dot response" />输出
+                      <strong>{fmtInt(point.response)} tokens</strong>
+                    </span>
+                  </div>
+                )}
+                <span className="bar-value">
+                  {point.total > 0 ? fmtTokensShort(point.total) : "0"}
+                </span>
+                <div className="bar-slot">
+                  <div
+                    className="cache-bar"
+                    style={{
+                      height: `${point.total > 0 ? Math.max(MIN_BAR, (point.total / maxVal) * 100) : MIN_BAR}%`,
+                    }}
+                    onMouseEnter={() => setHoveredIdx(idx)}
+                    onMouseLeave={() => setHoveredIdx(null)}
+                  >
+                    {point.total > 0 ? (
+                      <>
+                        {point.hit > 0 && <i className="seg hit" style={{ flexGrow: point.hit }} />}
+                        {point.miss > 0 && <i className="seg miss" style={{ flexGrow: point.miss }} />}
+                        {point.response > 0 && (
+                          <i className="seg response" style={{ flexGrow: point.response }} />
+                        )}
+                      </>
+                    ) : (
+                      <i className="seg empty" />
+                    )}
+                  </div>
+                </div>
+                <span className="bar-day">{mmdd(point.date)}</span>
               </div>
-              <span className="bar-day">{mmdd(day.date)}</span>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+          <div className="chart-legend-bottom">
+            <span className="chart-legend-item">
+              <i className="dot hit" />命中
+            </span>
+            <span className="chart-legend-item">
+              <i className="dot miss" />未命中
+            </span>
+            <span className="chart-legend-item">
+              <i className="dot response" />输出
+            </span>
+          </div>
+        </>
       ) : (
         <div className="chart-placeholder">{placeholder}</div>
       )}
@@ -910,13 +1000,18 @@ function ModelDetailPanel({
   const totalText = data ? fmtTokensShort(data.totalTokens) : "—";
 
   const days = recentUsageDays(usage?.days ?? []);
-  const points = days.map((day) => ({
-    date: day.date,
-    value: isFlash ? day.flashTokens : day.proTokens,
-  }));
-  const maxVal = Math.max(...points.map((point) => point.value), 1);
+  const points = days.map((day) => {
+    const hit = isFlash ? day.flashCacheHit : day.proCacheHit;
+    const miss = isFlash ? day.flashCacheMiss : day.proCacheMiss;
+    const response = isFlash ? day.flashResponse : day.proResponse;
+    return { date: day.date, hit, miss, response, total: hit + miss + response };
+  });
+  const maxVal = Math.max(...points.map((point) => point.total), 1);
   const rangeText =
     points.length > 0 ? `${mmdd(points[0].date)} - ${mmdd(points[points.length - 1].date)}` : "";
+
+  const [hoveredIdx, setHoveredIdx] = React.useState<number | null>(null);
+  const MIN_BAR = 3; // 整根柱子的最小可见高度百分比（含空数据占位）
 
   return (
     <section className="panel detail-panel" data-testid="detail-panel">
@@ -950,20 +1045,68 @@ function ModelDetailPanel({
             <h2>按日 Token 消耗</h2>
             <span>{rangeText}</span>
           </div>
-          <strong>{totalText}</strong>
         </div>
         {usageState === "ok" && points.length > 0 ? (
-          <div className="detail-bars">
-            {points.map((point) => (
-              <div className="detail-bar-column" key={point.date}>
-                <span>{point.value > 0 ? fmtTokensShort(point.value) : ""}</span>
-                <div className="detail-bar-slot">
-                  <i style={{ height: `${Math.max(6, (point.value / maxVal) * 100)}%` }} />
+          <>
+            <div className="detail-bars" onMouseLeave={() => setHoveredIdx(null)}>
+              {points.map((point, idx) => (
+                <div className="detail-bar-column" key={point.date}>
+                  {hoveredIdx === idx && point.total > 0 && (
+                    <div
+                      className={`bar-tooltip${
+                        idx <= 1 ? " align-left" : idx >= points.length - 2 ? " align-right" : ""
+                      }`}
+                    >
+                      <div className="bar-tooltip-head">
+                        <span className="bar-tooltip-date">{point.date}</span>
+                        <strong>{fmtInt(point.total)} tokens</strong>
+                      </div>
+                      <span className="bar-tooltip-row">
+                        <i className="dot hit" />输入（命中缓存）
+                        <strong>{fmtInt(point.hit)} tokens</strong>
+                      </span>
+                      <span className="bar-tooltip-row">
+                        <i className="dot miss" />输入（未命中缓存）
+                        <strong>{fmtInt(point.miss)} tokens</strong>
+                      </span>
+                      <span className="bar-tooltip-row">
+                        <i className="dot response" />输出
+                        <strong>{fmtInt(point.response)} tokens</strong>
+                      </span>
+                    </div>
+                  )}
+                  <span>{point.total > 0 ? fmtTokensShort(point.total) : ""}</span>
+                  <div className="detail-bar-slot">
+                    {/* 柱高按当天合计占最大值的比例；内部三段用 flex-grow 按真实 token 数分配，比例精确且永不溢出裁剪 */}
+                    <div
+                      className="detail-bar-stacked"
+                      style={{
+                        height: `${point.total > 0 ? Math.max(MIN_BAR, (point.total / maxVal) * 100) : MIN_BAR}%`,
+                      }}
+                      onMouseEnter={() => setHoveredIdx(idx)}
+                      onMouseLeave={() => setHoveredIdx(null)}
+                    >
+                      {point.total > 0 ? (
+                        <>
+                          {point.hit > 0 && <i className="seg hit" style={{ flexGrow: point.hit }} />}
+                          {point.miss > 0 && <i className="seg miss" style={{ flexGrow: point.miss }} />}
+                          {point.response > 0 && <i className="seg response" style={{ flexGrow: point.response }} />}
+                        </>
+                      ) : (
+                        <i className="seg empty" />
+                      )}
+                    </div>
+                  </div>
+                  <em>{mmdd(point.date)}</em>
                 </div>
-                <em>{mmdd(point.date)}</em>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+            <div className="chart-legend-bottom">
+              <span className="chart-legend-item"><i className="dot hit" />命中</span>
+              <span className="chart-legend-item"><i className="dot miss" />未命中</span>
+              <span className="chart-legend-item"><i className="dot response" />输出</span>
+            </div>
+          </>
         ) : (
           <div className="chart-placeholder">
             {usageState === "nokey" ? "未配置用量 Token" : usageState === "loading" ? "查询中…" : "暂无数据"}

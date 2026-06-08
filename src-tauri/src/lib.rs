@@ -658,7 +658,13 @@ pub fn run() {
     struct UsageDaySummary {
         date: String,
         flash_tokens: u64,
+        flash_cache_hit: u64,
+        flash_cache_miss: u64,
+        flash_response: u64,
         pro_tokens: u64,
+        pro_cache_hit: u64,
+        pro_cache_miss: u64,
+        pro_response: u64,
         total_tokens: u64,
         total_cost: f64,
     }
@@ -840,21 +846,43 @@ pub fn run() {
         let mut days = Vec::new();
         for day in &amount.data.biz_data.days {
             let mut flash = 0u64;
+            let mut flash_hit = 0u64;
+            let mut flash_miss = 0u64;
+            let mut flash_resp = 0u64;
             let mut pro = 0u64;
+            let mut pro_hit = 0u64;
+            let mut pro_miss = 0u64;
+            let mut pro_resp = 0u64;
             let mut total = 0u64;
             for model_usage in &day.data {
-                let (tokens, _, _, _, _) = token_breakdown(&model_usage.usage);
+                let (tokens, _, hit, miss, response) = token_breakdown(&model_usage.usage);
                 total += tokens;
                 match model_usage.model.as_str() {
-                    "deepseek-v4-flash" => flash += tokens,
-                    "deepseek-v4-pro" => pro += tokens,
+                    "deepseek-v4-flash" => {
+                        flash += tokens;
+                        flash_hit += hit;
+                        flash_miss += miss;
+                        flash_resp += response;
+                    }
+                    "deepseek-v4-pro" => {
+                        pro += tokens;
+                        pro_hit += hit;
+                        pro_miss += miss;
+                        pro_resp += response;
+                    }
                     _ => {}
                 }
             }
             days.push(UsageDaySummary {
                 date: day.date.clone(),
                 flash_tokens: flash,
+                flash_cache_hit: flash_hit,
+                flash_cache_miss: flash_miss,
+                flash_response: flash_resp,
                 pro_tokens: pro,
+                pro_cache_hit: pro_hit,
+                pro_cache_miss: pro_miss,
+                pro_response: pro_resp,
                 total_tokens: total,
                 total_cost: cost_by_date.get(&day.date).copied().unwrap_or(0.0),
             });

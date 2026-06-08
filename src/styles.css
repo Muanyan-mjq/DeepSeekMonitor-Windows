@@ -259,14 +259,29 @@ button {
 
 .usage-row {
   width: 100%;
-  height: 64px;
+  min-height: 64px;
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 9px 12px;
   border: 0;
   text-align: left;
   cursor: pointer;
+}
+
+.cache-hit-rate {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.cache-hit-rate.flash {
+  color: #65d0d1;
+}
+
+.cache-hit-rate.pro {
+  color: #c98bff;
 }
 
 .model-badge {
@@ -369,7 +384,9 @@ button {
   height: auto;
   min-height: 142px;
   padding: 12px 14px 14px;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow: visible; /* 让 hover 弹窗可溢出卡片显示 */
 }
 
 .chart-total {
@@ -392,7 +409,8 @@ button {
 }
 
 .bars {
-  height: 128px;
+  flex: 1;
+  min-height: 56px;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   align-items: end;
@@ -401,9 +419,10 @@ button {
 }
 
 .bar-column {
+  position: relative; /* hover 弹窗定位参照 */
   height: 100%;
   display: grid;
-  grid-template-rows: 16px 88px 16px;
+  grid-template-rows: 14px 1fr 14px;
   align-items: end;
   gap: 4px;
   text-align: center;
@@ -423,12 +442,39 @@ button {
   overflow: hidden;
 }
 
-.bar-slot i {
+.cache-bar {
   width: 100%;
-  max-width: 38px;
-  min-height: 4px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, rgba(107, 133, 255, 0.82), rgba(77, 107, 254, 0.55));
+  max-width: 30px;
+  display: flex;
+  flex-direction: column-reverse; /* 命中在底，输出在顶 */
+  border-radius: 4px;
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+
+.cache-bar .seg {
+  width: 100%;
+  flex-basis: 0;
+  flex-shrink: 1;
+  min-height: 2px;
+}
+
+.cache-bar .seg.hit {
+  background: #34d399;
+}
+
+.cache-bar .seg.miss {
+  background: var(--orange);
+}
+
+.cache-bar .seg.response {
+  background: #a78bfa;
+}
+
+.cache-bar .seg.empty {
+  flex-grow: 1;
+  min-height: 0;
+  background: rgba(246, 239, 222, 0.12);
 }
 
 .bar-day {
@@ -790,6 +836,7 @@ button:disabled {
 .detail-chart-head h2 {
   margin: 0 0 6px;
   font-size: 16px;
+  white-space: nowrap;
 }
 
 .detail-chart-head span,
@@ -811,7 +858,7 @@ button:disabled {
 .detail-bar-column {
   height: 100%;
   display: grid;
-  grid-template-rows: 18px 1fr 20px;
+  grid-template-rows: 18px 1fr 20px; /* 柱顶数值 / 柱子区 / 底部日期 */
   justify-items: center;
   align-items: stretch;
 }
@@ -834,13 +881,191 @@ button:disabled {
   justify-content: center;
 }
 
-.detail-bar-column i {
+/* ---------- 堆叠柱 ---------- */
+.detail-bar-stacked {
   width: 18px;
-  min-height: 6px;
   max-height: 100%;
+  display: flex;
+  flex-direction: column-reverse; /* 第一个子元素(命中)落在底部，输出落在顶部 */
   border-radius: 8px;
-  background: linear-gradient(180deg, #57b6df, #427dff);
+  overflow: hidden;
+  transition: height 0.35s ease;
 }
+
+.detail-bar-stacked .seg {
+  width: 100%;
+  flex-basis: 0;     /* 纯按 flex-grow(真实 token 数)比例分配高度 */
+  flex-shrink: 1;    /* 空间不足时按比例收缩，避免 min-height 累加溢出 */
+  min-height: 3px;   /* 保证非零小段始终可见 */
+}
+
+.detail-bar-stacked .seg.hit    { background: #34d399; }
+.detail-bar-stacked .seg.miss   { background: var(--orange); }
+.detail-bar-stacked .seg.response { background: #a78bfa; }
+.detail-bar-stacked .seg.empty  {
+  flex-grow: 1;      /* 空数据占位段填满 MIN_BAR 高度的柱子 */
+  min-height: 0;
+  background: rgba(246, 239, 222, 0.12);
+  border-radius: 8px;
+}
+
+/* ---------- 磨玻璃浮窗 ---------- */
+.detail-bar-column {
+  position: relative;
+}
+
+.bar-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 120px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(30, 28, 16, 0.78);
+  backdrop-filter: blur(14px) saturate(1.2);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* 首柱浮窗左对齐、末柱右对齐，避免贴边超出 */
+.bar-tooltip.align-left {
+  left: 2px;
+  transform: none;
+}
+
+.bar-tooltip.align-right {
+  left: auto;
+  right: 2px;
+  transform: none;
+}
+
+.bar-tooltip-date {
+  margin-bottom: 2px;
+  color: rgba(246, 239, 222, 0.56);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.bar-tooltip strong {
+  float: right;
+  margin-left: 14px;
+  color: rgba(246, 239, 222, 0.92);
+}
+
+.bar-tooltip-sub {
+  padding-left: 12px;
+  color: rgba(246, 239, 222, 0.64);
+  font-weight: 600;
+}
+
+.bar-tooltip-total {
+  margin-top: 3px;
+  padding-top: 5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 12px;
+}
+
+.bar-tooltip-total strong {
+  font-size: 13px;
+}
+
+/* 主界面缓存明细弹窗：日期+合计头部 / 带色点的明细行 */
+.bar-tooltip-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 7px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.bar-tooltip-head .bar-tooltip-date {
+  margin-bottom: 0;
+  color: rgba(246, 239, 222, 0.95);
+  font-size: 12px;
+}
+
+.bar-tooltip-head strong {
+  float: none;
+  margin-left: 0;
+  font-size: 12px;
+}
+
+.bar-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: rgba(246, 239, 222, 0.7);
+  font-weight: 600;
+}
+
+.bar-tooltip-row .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.bar-tooltip-row .dot.hit {
+  background: #34d399;
+}
+
+.bar-tooltip-row .dot.miss {
+  background: var(--orange);
+}
+
+.bar-tooltip-row .dot.response {
+  background: #a78bfa;
+}
+
+.bar-tooltip-row strong {
+  float: none;
+  margin-left: auto;
+  color: rgba(246, 239, 222, 0.95);
+  font-weight: 800;
+}
+
+/* ---------- 颜色图例（柱状图底部） ---------- */
+.chart-legend-bottom {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.chart-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(246, 239, 222, 0.68);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.chart-legend-item .dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 4px;
+}
+
+.chart-legend-item .dot.hit    { background: #34d399; }
+.chart-legend-item .dot.miss   { background: var(--orange); }
+.chart-legend-item .dot.response { background: #a78bfa; }
 
 .detail-bar-column em {
   color: var(--text-faint);
