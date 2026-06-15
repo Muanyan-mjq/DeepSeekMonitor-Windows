@@ -26,7 +26,7 @@ DeepSeek Monitor Windows: Windows desktop adaptation of felikschu/deepseek-monit
 
 扫码添加微信（备注 GitHub）：
 
-![微信二维码](screenshots/wechat-qrcode.jpg)
+<img src="screenshots/wechat-qrcode.jpg" alt="微信二维码" width="200">
 
 微信号：`pixel-cafetime`
 
