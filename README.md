@@ -12,7 +12,27 @@ DeepSeek Monitor Windows: Windows desktop adaptation of felikschu/deepseek-monit
 
 ## 页面截图
 
+### 旧版本 UI
+
 ![DeepSeek Monitor Windows 页面总览](screenshots/overview.png)
+
+### 新版本 UI
+
+![DeepSeek Monitor Windows 新版本 UI](screenshots/new-ui.png)
+
+## 联系方式
+
+### 微信交流
+
+扫码添加微信（备注 GitHub）：
+
+![微信二维码](screenshots/wechat-qrcode.jpg)
+
+微信号：`pixel-cafetime`
+
+微信公众号：像素与咖啡生活
+
+抖音号：像素与咖啡生活
 
 ## 当前能力
 
