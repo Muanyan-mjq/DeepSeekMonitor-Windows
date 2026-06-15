@@ -30,9 +30,9 @@ DeepSeek Monitor Windows: Windows desktop adaptation of felikschu/deepseek-monit
 
 微信号：`pixel-cafetime`
 
-微信公众号：像素与咖啡生活
+微信公众号：像素与咖啡时光
 
-抖音号：像素与咖啡生活
+抖音号：像素与咖啡时光
 
 ## 当前能力
 
