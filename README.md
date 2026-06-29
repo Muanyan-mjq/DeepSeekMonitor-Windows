@@ -2,9 +2,20 @@
 
 DeepSeek Monitor Windows 是一个面向 Windows 的 DeepSeek API 用量监控桌面应用，用于查看账户余额、当月消费、模型 Token 用量和最近用量趋势。
 
+> **本项目 fork 自 [Joyi-code/DeepSeekMonitorWindows](https://github.com/Joyi-code/DeepSeekMonitorWindows)**，在其基础上增加了多主题切换、余额告警等功能。感谢原作者 [Joyi-code](https://github.com/Joyi-code) 的开源工作。
+
 本项目基于 [JayHome137/deepseek-monitor](https://github.com/JayHome137/DeepSeekMonitor) 的开源项目思路做 Windows 系统适配，**感谢原作者 JayHome137 的开源工作**。原项目是 Python Web Dashboard，用于追踪 DeepSeek 平台多类公开变化，原项目当前仅支持mac版本。本项目开发目标是 Windows 桌面端监控工具，技术栈和使用方式已经按 Windows 平台重构实现。
 
 郑重声明：本项目不是 DeepSeek 官方产品。
+
+## 新增功能（本 fork）
+
+在原项目基础上新增：
+
+- **7 主题切换**：暗色 / 亮色 / 海洋蓝 / 森林绿 / 暖金日落 / 樱花粉 / 薰衣草紫，点击 Shirt 按钮循环切换，每个主题独立适配告警配色
+- **余额告警**：设置页可配置余额告警线，仪表盘余额低于阈值时显示告警提示
+- **缓存命中率精确显示**：命中率精确到小数点后两位
+- **告警卡片主题适配**：7 套主题各有对应的告警配色，确保不同背景下都清晰可见
 
 ## About
 
