@@ -1227,6 +1227,12 @@ button:disabled {
   color: #fff;
 }
 
+[data-theme="light"] .balance-alert-card {
+  border-color: rgba(200, 50, 40, 0.40);
+  background: linear-gradient(180deg, rgba(255, 210, 200, 0.58), rgba(255, 185, 175, 0.50));
+  color: #b91c1c;
+}
+
 /* 皮肤选择按钮与弹窗 */
 .skin-menu-wrap {
   position: relative;
@@ -1245,4 +1251,522 @@ button:disabled {
   background: rgba(var(--fg), 0.14);
   color: var(--skin-accent);
   box-shadow: inset 0 0 0 1px rgba(var(--fg), 0.12);
+}
+
+/* ==================== 余额告警卡片 ==================== */
+.balance-alert-card {
+  padding: 10px 14px;
+  border-color: rgba(255, 140, 60, 0.35);
+  background: linear-gradient(180deg, rgba(180, 80, 30, 0.42), rgba(150, 60, 20, 0.38));
+  color: #ffb088;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+/* ==================== 预算设置 ==================== */
+.budget-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.budget-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: rgba(var(--fg), 0.78);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.budget-label input {
+  width: 130px;
+  height: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 7px;
+  padding: 0 8px;
+  background: rgba(24, 23, 19, 0.78);
+  color: white;
+  font-size: 12px;
+  text-align: right;
+}
+
+/* ==================== 海洋蓝主题 ==================== */
+[data-theme="ocean"] {
+  --brand: #0ea5e9;
+  --brand-light: #38bdf8;
+  --flash: #38bdf8;
+  --pro: #818cf8;
+  --orange: #f59e0b;
+  --skin-accent: #0ea5e9;
+}
+
+[data-theme="ocean"] .panel,
+[data-theme="ocean"] .settings-panel {
+  background:
+    linear-gradient(145deg, rgba(30, 65, 120, 0.78), rgba(20, 45, 80, 0.72)),
+    rgba(25, 50, 95, 0.80);
+}
+
+[data-theme="ocean"] .card {
+  background: linear-gradient(180deg, rgba(20, 40, 70, 0.68), rgba(18, 35, 60, 0.62));
+}
+
+[data-theme="ocean"] .balance-amount {
+  color: #22d3ee;
+}
+
+[data-theme="ocean"] .mini-card {
+  background: rgba(30, 55, 95, 0.50);
+}
+
+[data-theme="ocean"] .model-badge.flash {
+  background: rgba(56, 189, 248, 0.18);
+}
+
+[data-theme="ocean"] .model-badge.pro {
+  background: rgba(129, 140, 248, 0.20);
+}
+
+[data-theme="ocean"] .detail-chart {
+  background: linear-gradient(180deg, rgba(15, 35, 60, 0.58), rgba(20, 40, 65, 0.62));
+}
+
+[data-theme="ocean"] .progress-track {
+  background: rgba(30, 55, 100, 0.22);
+}
+
+[data-theme="ocean"] .detail-bar-stacked .seg.hit,
+[data-theme="ocean"] .cache-bar .seg.hit,
+[data-theme="ocean"] .chart-legend-item .dot.hit,
+[data-theme="ocean"] .bar-tooltip-row .dot.hit {
+  background: #22d3ee;
+}
+
+[data-theme="ocean"] .detail-bar-stacked .seg.response,
+[data-theme="ocean"] .cache-bar .seg.response,
+[data-theme="ocean"] .chart-legend-item .dot.response,
+[data-theme="ocean"] .bar-tooltip-row .dot.response {
+  background: #a5b4fc;
+}
+
+[data-theme="ocean"] .balance-alert-card {
+  border-color: rgba(255, 170, 50, 0.50);
+  background: linear-gradient(180deg, rgba(200, 100, 30, 0.50), rgba(170, 80, 20, 0.44));
+  color: #ffb072;
+}
+
+/* ==================== 森林绿主题 ==================== */
+[data-theme="forest"] {
+  --brand: #10b981;
+  --brand-light: #34d399;
+  --flash: #34d399;
+  --pro: #f59e0b;
+  --orange: #f97316;
+  --skin-accent: #10b981;
+}
+
+[data-theme="forest"] .panel,
+[data-theme="forest"] .settings-panel {
+  background:
+    linear-gradient(145deg, rgba(40, 85, 55, 0.78), rgba(25, 55, 35, 0.72)),
+    rgba(30, 65, 45, 0.80);
+}
+
+[data-theme="forest"] .card {
+  background: linear-gradient(180deg, rgba(25, 50, 35, 0.68), rgba(20, 42, 30, 0.62));
+}
+
+[data-theme="forest"] .balance-amount {
+  color: #6ee7b7;
+}
+
+[data-theme="forest"] .mini-card {
+  background: rgba(30, 65, 45, 0.50);
+}
+
+[data-theme="forest"] .model-badge.flash {
+  background: rgba(52, 211, 153, 0.18);
+}
+
+[data-theme="forest"] .model-badge.pro {
+  background: rgba(245, 158, 11, 0.20);
+}
+
+[data-theme="forest"] .detail-chart {
+  background: linear-gradient(180deg, rgba(20, 45, 30, 0.58), rgba(25, 50, 35, 0.62));
+}
+
+[data-theme="forest"] .progress-track {
+  background: rgba(25, 60, 40, 0.22);
+}
+
+[data-theme="forest"] .detail-bar-stacked .seg.hit,
+[data-theme="forest"] .cache-bar .seg.hit,
+[data-theme="forest"] .chart-legend-item .dot.hit,
+[data-theme="forest"] .bar-tooltip-row .dot.hit {
+  background: #34d399;
+}
+
+[data-theme="forest"] .detail-bar-stacked .seg.response,
+[data-theme="forest"] .cache-bar .seg.response,
+[data-theme="forest"] .chart-legend-item .dot.response,
+[data-theme="forest"] .bar-tooltip-row .dot.response {
+  background: #fbbf24;
+}
+
+[data-theme="forest"] .balance-alert-card {
+  border-color: rgba(255, 190, 50, 0.50);
+  background: linear-gradient(180deg, rgba(200, 130, 30, 0.50), rgba(170, 100, 20, 0.44));
+  color: #ffd088;
+}
+
+/* ==================== 暖金日落主题 ==================== */
+[data-theme="sunset"] {
+  --brand: #f59e0b;
+  --brand-light: #fbbf24;
+  --flash: #fbbf24;
+  --pro: #f472b6;
+  --orange: #f97316;
+  --skin-accent: #f59e0b;
+}
+
+[data-theme="sunset"] .panel,
+[data-theme="sunset"] .settings-panel {
+  background:
+    linear-gradient(145deg, rgba(140, 85, 40, 0.78), rgba(100, 55, 25, 0.72)),
+    rgba(120, 70, 35, 0.80);
+}
+
+[data-theme="sunset"] .card {
+  background: linear-gradient(180deg, rgba(80, 50, 25, 0.68), rgba(65, 40, 20, 0.62));
+}
+
+[data-theme="sunset"] .balance-amount {
+  color: #fbbf24;
+}
+
+[data-theme="sunset"] .mini-card {
+  background: rgba(100, 55, 30, 0.50);
+}
+
+[data-theme="sunset"] .model-badge.flash {
+  background: rgba(251, 191, 36, 0.18);
+}
+
+[data-theme="sunset"] .model-badge.pro {
+  background: rgba(244, 114, 182, 0.20);
+}
+
+[data-theme="sunset"] .detail-chart {
+  background: linear-gradient(180deg, rgba(70, 45, 20, 0.58), rgba(60, 35, 15, 0.62));
+}
+
+[data-theme="sunset"] .progress-track {
+  background: rgba(100, 60, 30, 0.22);
+}
+
+[data-theme="sunset"] .detail-bar-stacked .seg.hit,
+[data-theme="sunset"] .cache-bar .seg.hit,
+[data-theme="sunset"] .chart-legend-item .dot.hit,
+[data-theme="sunset"] .bar-tooltip-row .dot.hit {
+  background: #fbbf24;
+}
+
+[data-theme="sunset"] .detail-bar-stacked .seg.response,
+[data-theme="sunset"] .cache-bar .seg.response,
+[data-theme="sunset"] .chart-legend-item .dot.response,
+[data-theme="sunset"] .bar-tooltip-row .dot.response {
+  background: #f9a8d4;
+}
+
+[data-theme="sunset"] .balance-alert-card {
+  border-color: rgba(255, 90, 70, 0.55);
+  background: linear-gradient(180deg, rgba(210, 60, 40, 0.55), rgba(180, 40, 25, 0.48));
+  color: #ffaaaa;
+}
+
+/* ==================== 樱花粉主题 ==================== */
+[data-theme="sakura"] {
+  --fg: 60, 30, 50;
+  --text-strong: rgba(60, 25, 45, 0.92);
+  --brand: #e91e63;
+  --brand-light: #f472b6;
+  --flash: #f472b6;
+  --pro: #a78bfa;
+  --orange: #f59e0b;
+  --skin-accent: #e91e63;
+}
+
+[data-theme="sakura"] .panel,
+[data-theme="sakura"] .settings-panel {
+  border-color: rgba(255, 200, 220, 0.55);
+  background:
+    linear-gradient(150deg, rgba(255, 210, 225, 0.85), rgba(255, 230, 240, 0.82)),
+    rgba(255, 220, 235, 0.92);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="sakura"] .card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 240, 245, 0.42));
+  border-color: rgba(255, 220, 230, 0.6);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.7), 0 2px 8px rgba(200, 80, 120, 0.08);
+}
+
+[data-theme="sakura"] .header-actions button,
+[data-theme="sakura"] .floating-close {
+  color: rgba(80, 30, 50, 0.82);
+}
+
+[data-theme="sakura"] .caption-with-icon.orange {
+  color: rgba(200, 80, 20, 1);
+}
+
+[data-theme="sakura"] .status-pill {
+  background: rgba(200, 60, 100, 0.16);
+  color: #c02660;
+}
+[data-theme="sakura"] .status-pill span {
+  background: #c02660;
+}
+[data-theme="sakura"] .status-pill.off {
+  background: rgba(220, 120, 80, 0.18);
+  color: #d2691e;
+}
+[data-theme="sakura"] .status-pill.off span {
+  background: #d2691e;
+}
+
+[data-theme="sakura"] .balance-amount {
+  color: #e91e63;
+}
+[data-theme="sakura"] .balance-error {
+  color: #dc2626;
+}
+[data-theme="sakura"] .mini-card {
+  background: rgba(255, 220, 235, 0.52);
+}
+
+[data-theme="sakura"] .cache-hit-rate.flash {
+  color: #db2777;
+}
+[data-theme="sakura"] .cache-hit-rate.pro {
+  color: #7c3aed;
+}
+
+[data-theme="sakura"] .model-badge.flash {
+  background: rgba(244, 114, 182, 0.18);
+}
+[data-theme="sakura"] .model-badge.pro {
+  background: rgba(167, 139, 250, 0.18);
+}
+
+[data-theme="sakura"] .progress-track {
+  background: rgba(100, 40, 60, 0.12);
+}
+
+[data-theme="sakura"] .detail-bar-stacked .seg.hit,
+[data-theme="sakura"] .cache-bar .seg.hit,
+[data-theme="sakura"] .chart-legend-item .dot.hit,
+[data-theme="sakura"] .bar-tooltip-row .dot.hit {
+  background: #ec4899;
+}
+
+[data-theme="sakura"] .detail-bar-stacked .seg.response,
+[data-theme="sakura"] .cache-bar .seg.response,
+[data-theme="sakura"] .chart-legend-item .dot.response,
+[data-theme="sakura"] .bar-tooltip-row .dot.response {
+  background: #8b5cf6;
+}
+
+[data-theme="sakura"] .detail-chart {
+  background: linear-gradient(180deg, rgba(255, 245, 250, 0.45), rgba(255, 240, 245, 0.34));
+}
+
+[data-theme="sakura"] .bar-tooltip {
+  background: rgba(255, 250, 252, 0.92);
+  border-color: rgba(100, 40, 60, 0.14);
+}
+[data-theme="sakura"] .bar-tooltip-total {
+  border-top-color: rgba(100, 40, 60, 0.14);
+}
+[data-theme="sakura"] .bar-tooltip-head {
+  border-bottom-color: rgba(100, 40, 60, 0.14);
+}
+[data-theme="sakura"] .chart-legend-bottom {
+  border-top-color: rgba(100, 40, 60, 0.12);
+}
+
+[data-theme="sakura"] .settings-section {
+  border-top-color: rgba(100, 40, 60, 0.14);
+}
+[data-theme="sakura"] .key-row input {
+  border-color: rgba(100, 40, 60, 0.18);
+  background: rgba(255, 255, 255, 0.72);
+  color: #3d1a2c;
+}
+[data-theme="sakura"] .configured {
+  color: #c02660;
+}
+[data-theme="sakura"] .toggle-row i {
+  background: rgba(100, 40, 60, 0.22);
+}
+[data-theme="sakura"] .toggle-row input:checked + i {
+  background: #e91e63;
+}
+[data-theme="sakura"] .segmented button {
+  color: #3d1a2c;
+}
+[data-theme="sakura"] .segmented .selected {
+  color: #fff;
+}
+
+[data-theme="sakura"] .balance-alert-card {
+  border-color: rgba(200, 60, 40, 0.45);
+  background: linear-gradient(180deg, rgba(255, 200, 180, 0.55), rgba(255, 175, 155, 0.48));
+  color: #b91c1c;
+}
+
+/* ==================== 薰衣草紫主题 ==================== */
+[data-theme="lavender"] {
+  --fg: 40, 30, 70;
+  --text-strong: rgba(35, 25, 60, 0.92);
+  --brand: #8b5cf6;
+  --brand-light: #a78bfa;
+  --flash: #a78bfa;
+  --pro: #f59e0b;
+  --orange: #f97316;
+  --skin-accent: #8b5cf6;
+}
+
+[data-theme="lavender"] .panel,
+[data-theme="lavender"] .settings-panel {
+  border-color: rgba(220, 210, 255, 0.55);
+  background:
+    linear-gradient(150deg, rgba(220, 210, 250, 0.85), rgba(235, 225, 255, 0.82)),
+    rgba(225, 215, 250, 0.92);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="lavender"] .card {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(245, 240, 255, 0.42));
+  border-color: rgba(220, 210, 245, 0.6);
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.7), 0 2px 8px rgba(100, 60, 180, 0.08);
+}
+
+[data-theme="lavender"] .header-actions button,
+[data-theme="lavender"] .floating-close {
+  color: rgba(45, 30, 80, 0.82);
+}
+
+[data-theme="lavender"] .caption-with-icon.orange {
+  color: rgba(200, 90, 10, 1);
+}
+
+[data-theme="lavender"] .status-pill {
+  background: rgba(120, 80, 200, 0.16);
+  color: #7c3aed;
+}
+[data-theme="lavender"] .status-pill span {
+  background: #7c3aed;
+}
+[data-theme="lavender"] .status-pill.off {
+  background: rgba(220, 120, 60, 0.18);
+  color: #d2691e;
+}
+[data-theme="lavender"] .status-pill.off span {
+  background: #d2691e;
+}
+
+[data-theme="lavender"] .balance-amount {
+  color: #8b5cf6;
+}
+[data-theme="lavender"] .balance-error {
+  color: #dc2626;
+}
+[data-theme="lavender"] .mini-card {
+  background: rgba(235, 225, 255, 0.52);
+}
+
+[data-theme="lavender"] .cache-hit-rate.flash {
+  color: #7c3aed;
+}
+[data-theme="lavender"] .cache-hit-rate.pro {
+  color: #d97706;
+}
+
+[data-theme="lavender"] .model-badge.flash {
+  background: rgba(167, 139, 250, 0.18);
+}
+[data-theme="lavender"] .model-badge.pro {
+  background: rgba(245, 158, 11, 0.18);
+}
+
+[data-theme="lavender"] .progress-track {
+  background: rgba(60, 30, 100, 0.12);
+}
+
+[data-theme="lavender"] .detail-bar-stacked .seg.hit,
+[data-theme="lavender"] .cache-bar .seg.hit,
+[data-theme="lavender"] .chart-legend-item .dot.hit,
+[data-theme="lavender"] .bar-tooltip-row .dot.hit {
+  background: #a78bfa;
+}
+
+[data-theme="lavender"] .detail-bar-stacked .seg.response,
+[data-theme="lavender"] .cache-bar .seg.response,
+[data-theme="lavender"] .chart-legend-item .dot.response,
+[data-theme="lavender"] .bar-tooltip-row .dot.response {
+  background: #fbbf24;
+}
+
+[data-theme="lavender"] .detail-chart {
+  background: linear-gradient(180deg, rgba(250, 245, 255, 0.45), rgba(245, 240, 255, 0.34));
+}
+
+[data-theme="lavender"] .bar-tooltip {
+  background: rgba(252, 250, 255, 0.92);
+  border-color: rgba(60, 30, 100, 0.14);
+}
+[data-theme="lavender"] .bar-tooltip-total {
+  border-top-color: rgba(60, 30, 100, 0.14);
+}
+[data-theme="lavender"] .bar-tooltip-head {
+  border-bottom-color: rgba(60, 30, 100, 0.14);
+}
+[data-theme="lavender"] .chart-legend-bottom {
+  border-top-color: rgba(60, 30, 100, 0.12);
+}
+
+[data-theme="lavender"] .settings-section {
+  border-top-color: rgba(60, 30, 100, 0.14);
+}
+[data-theme="lavender"] .key-row input {
+  border-color: rgba(60, 30, 100, 0.18);
+  background: rgba(255, 255, 255, 0.72);
+  color: #2d1e50;
+}
+[data-theme="lavender"] .configured {
+  color: #7c3aed;
+}
+[data-theme="lavender"] .toggle-row i {
+  background: rgba(60, 30, 100, 0.22);
+}
+[data-theme="lavender"] .toggle-row input:checked + i {
+  background: #8b5cf6;
+}
+[data-theme="lavender"] .segmented button {
+  color: #2d1e50;
+}
+[data-theme="lavender"] .segmented .selected {
+  color: #fff;
+}
+
+[data-theme="lavender"] .balance-alert-card {
+  border-color: rgba(220, 120, 40, 0.45);
+  background: linear-gradient(180deg, rgba(255, 210, 160, 0.55), rgba(255, 185, 130, 0.48));
+  color: #b45309;
 }

@@ -32,6 +32,7 @@ type AppConfig = {
   autoRefreshEnabled: boolean;
   autostart: boolean;
   configPath: string;
+  balanceAlertThreshold: number | null;
 };
 type BalanceData = {
   isAvailable: boolean;
@@ -302,11 +303,13 @@ function DashboardPanel({
   onSettings: () => void;
   onDetail: (model: ModelName) => void;
 }) {
+  const themeKeys = ["dark", "light", "ocean", "forest", "sunset", "sakura", "lavender"];
   const [theme, setTheme] = React.useState<string>(
     () => localStorage.getItem("ui-theme") || "dark",
   );
   const toggleTheme = () => {
-    const next = theme === "dark" ? "light" : "dark";
+    const idx = themeKeys.indexOf(theme);
+    const next = themeKeys[(idx + 1) % themeKeys.length];
     setTheme(next);
     localStorage.setItem("ui-theme", next);
     document.documentElement.setAttribute("data-theme", next);
@@ -317,6 +320,23 @@ function DashboardPanel({
   const today = usage?.days.find((day) => day.date === todayStr()) ?? null;
   const todayCost = usageState === "ok" && today ? today.totalCost : null;
   const monthCost = usageState === "ok" && usage ? usage.monthCost : null;
+
+  // 余额告警
+  const [balanceAlertThreshold, setBalanceAlertThreshold] = React.useState<number | null>(null);
+  React.useEffect(() => {
+    void invoke<AppConfig>("get_app_config")
+      .then((config) => {
+        setBalanceAlertThreshold(config.balanceAlertThreshold);
+      })
+      .catch(() => {});
+  }, []);
+
+  const balanceLow =
+    balanceState === "ok" &&
+    balance != null &&
+    balanceAlertThreshold != null &&
+    balanceAlertThreshold > 0 &&
+    parseFloat(balance.totalBalance) < balanceAlertThreshold;
 
   return (
     <section className="panel dashboard-panel" data-testid="dashboard-panel">
@@ -333,7 +353,7 @@ function DashboardPanel({
             <button
               aria-label="Toggle theme"
               className="skin-toggle"
-              title={theme === "dark" ? "Switch to light" : "Switch to dark"}
+              title="切换主题"
               onClick={toggleTheme}
             >
               <Shirt size={21} />
@@ -354,7 +374,14 @@ function DashboardPanel({
         error={balanceError}
         todayCost={todayCost}
         monthCost={monthCost}
+        balanceLow={balanceLow}
       />
+
+      {balanceLow && (
+        <div className="card balance-alert-card">
+          ⚠ 账户余额低于告警线（{fmtMoney(balanceAlertThreshold!)}），当前余额 {fmtMoney(parseFloat(balance!.totalBalance))}
+        </div>
+      )}
 
       <div className="usage-stack">
         <UsageRow
@@ -384,12 +411,14 @@ function BalanceCard({
   error,
   todayCost,
   monthCost,
+  balanceLow,
 }: {
   balance: BalanceData | null;
   state: BalanceState;
   error: string;
   todayCost: number | null;
   monthCost: number | null;
+  balanceLow: boolean;
 }) {
   const symbol = balance?.currency === "USD" ? "$" : "¥";
   const amount =
@@ -400,8 +429,10 @@ function BalanceCard({
         : state === "error"
           ? "查询失败"
           : `${symbol}${balance?.totalBalance ?? "0.00"}`;
-  const statusText = state === "ok" ? (balance?.isAvailable ? "可用" : "余额不足") : "—";
-  const statusOff = state === "ok" && balance != null && !balance.isAvailable;
+  const statusText = state === "ok"
+    ? (balanceLow ? "余额偏低" : balance?.isAvailable ? "可用" : "余额不足")
+    : "—";
+  const statusOff = state === "ok" && balance != null && (balanceLow || !balance.isAvailable);
 
   return (
     <article className="card balance-card">
@@ -480,8 +511,8 @@ function UsageRow({
         </div>
         {data && data.cacheHitTokens + data.cacheMissTokens > 0 && (
           <span className={`cache-hit-rate ${isFlash ? "flash" : "pro"}`}>
-            缓存命中{" "}
-            {((data.cacheHitTokens / (data.cacheHitTokens + data.cacheMissTokens)) * 100).toFixed(0)}%
+            命中率{" "}
+            {((data.cacheHitTokens / (data.cacheHitTokens + data.cacheMissTokens)) * 100).toFixed(2)}%
           </span>
         )}
       </div>
@@ -516,7 +547,7 @@ function UsageChart({
   const sumHit = points.reduce((sum, point) => sum + point.hit, 0);
   const sumMiss = points.reduce((sum, point) => sum + point.miss, 0);
   const sumTotal = points.reduce((sum, point) => sum + point.total, 0);
-  const hitRate = sumHit + sumMiss > 0 ? ((sumHit / (sumHit + sumMiss)) * 100).toFixed(0) : "0";
+  const hitRate = sumHit + sumMiss > 0 ? ((sumHit / (sumHit + sumMiss)) * 100).toFixed(2) : "0.00";
   const placeholder =
     state === "loading"
       ? "查询中…"
@@ -639,6 +670,7 @@ function SettingsPanel({
   const [usageSyncing, setUsageSyncing] = React.useState(false);
   const [showManualPaste, setShowManualPaste] = React.useState(false);
   const [appVersion, setAppVersion] = React.useState("1.1.0");
+  const [pendingBalanceThreshold, setPendingBalanceThreshold] = React.useState<number | null>(null);
   const configPath = config?.configPath ?? "%APPDATA%\\DeepSeekMonitorWindows\\config.json";
 
   React.useEffect(() => {
@@ -842,6 +874,26 @@ function SettingsPanel({
     [autoRefresh, onAutoRefreshChanged],
   );
 
+  const saveBudgetConfig = React.useCallback(() => {
+    setBusy(true);
+    void invoke<AppConfig>("save_balance_alert_config", {
+      balanceAlertThreshold: pendingBalanceThreshold,
+    })
+      .then((nextConfig) => {
+        setConfig(nextConfig);
+        setPendingBalanceThreshold(null);
+        setStatus(
+          nextConfig.balanceAlertThreshold != null
+            ? `余额告警线已设为 ¥${nextConfig.balanceAlertThreshold}`
+            : "余额告警已关闭",
+        );
+      })
+      .catch((error) => {
+        setStatus(typeof error === "string" ? error : "保存失败");
+      })
+      .finally(() => setBusy(false));
+  }, [pendingBalanceThreshold]);
+
   const saveAutostart = React.useCallback((enabled: boolean) => {
     const previous = autostart;
     setAutostart(enabled);
@@ -965,6 +1017,35 @@ function SettingsPanel({
               ))}
             </div>
           )}
+        </SettingsSection>
+
+        <SettingsSection icon={<CreditCard size={15} />} title="余额告警">
+          <p>当账户余额低于设定值时，仪表盘会显示告警提示。</p>
+          <div className="budget-fields">
+            <label className="budget-label">
+              <span>余额告警线（¥）</span>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                placeholder={config?.balanceAlertThreshold != null ? String(config.balanceAlertThreshold) : "不启用"}
+                onChange={(e) => {
+                  const v = parseFloat(e.target.value);
+                  setPendingBalanceThreshold(isNaN(v) || v <= 0 ? null : v);
+                }}
+                onKeyDown={(e) => { if (e.key === "Enter") saveBudgetConfig(); }}
+              />
+            </label>
+          </div>
+          <div className="settings-actions">
+            <button className="primary" onClick={saveBudgetConfig} disabled={busy}>
+              保存
+            </button>
+            <span className={config?.balanceAlertThreshold != null ? "configured" : "configured muted-status"}>
+              <CheckCircle2 size={17} />
+              {config?.balanceAlertThreshold != null ? `已设置 ¥${config.balanceAlertThreshold}` : "未设置"}
+            </span>
+          </div>
         </SettingsSection>
 
         <SettingsSection icon={<Info size={15} />} title="关于">

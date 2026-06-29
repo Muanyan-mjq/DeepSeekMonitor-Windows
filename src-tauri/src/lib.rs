@@ -30,6 +30,8 @@ pub fn run() {
         #[serde(default)]
         auto_refresh_enabled: bool,
         autostart: bool,
+        #[serde(default)]
+        balance_alert_threshold: Option<f64>,
     }
 
     #[derive(Debug, Serialize)]
@@ -42,6 +44,7 @@ pub fn run() {
         auto_refresh_enabled: bool,
         autostart: bool,
         config_path: String,
+        balance_alert_threshold: Option<f64>,
     }
 
     fn config_path() -> Result<PathBuf, String> {
@@ -125,6 +128,7 @@ pub fn run() {
             auto_refresh_enabled: config.auto_refresh_enabled,
             autostart: config.autostart,
             config_path: path.to_string_lossy().to_string(),
+            balance_alert_threshold: config.balance_alert_threshold,
         })
     }
 
@@ -241,6 +245,17 @@ pub fn run() {
         apply_autostart(autostart)?;
         let mut config = read_stored_config()?;
         config.autostart = autostart;
+        write_stored_config(&config)?;
+        to_app_config(config)
+    }
+
+    #[tauri::command]
+    fn save_balance_alert_config(
+        balance_alert_threshold: Option<f64>,
+    ) -> Result<AppConfig, String> {
+        let mut config = read_stored_config()?;
+        // None 或 <=0 的值视为"不启用"
+        config.balance_alert_threshold = balance_alert_threshold.filter(|v| *v > 0.0);
         write_stored_config(&config)?;
         to_app_config(config)
     }
@@ -917,6 +932,7 @@ pub fn run() {
             save_refresh_interval,
             save_auto_refresh_enabled,
             save_autostart,
+            save_balance_alert_config,
             fetch_balance,
             save_usage_token,
             clear_usage_token,
