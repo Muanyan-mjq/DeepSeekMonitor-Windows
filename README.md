@@ -13,13 +13,13 @@ DeepSeek Monitor Windows 是一个面向 Windows 的 DeepSeek API 用量监控�
 点击仪表盘 Shirt 按钮循环切换 7 套主题。
 
 <p>
-<img src="screenshots/dashboard.png" width="200">
-<img src="screenshots/theme-dark.png" width="200">
-<img src="screenshots/theme-light.png" width="200">
-<img src="screenshots/theme-ocean.png" width="200">
-<img src="screenshots/theme-forest.png" width="200">
-<img src="screenshots/theme-sunset.png" width="200">
-<img src="screenshots/theme-sakura.png" width="200">
+<img src="screenshots/dashboard.png" width="200" height="320">
+<img src="screenshots/theme-dark.png" width="200" height="320">
+<img src="screenshots/theme-light.png" width="200" height="320">
+<img src="screenshots/theme-ocean.png" width="200" height="320">
+<img src="screenshots/theme-forest.png" width="200" height="320">
+<img src="screenshots/theme-sunset.png" width="200" height="320">
+<img src="screenshots/theme-sakura.png" width="200" height="320">
 </p>
 
 ## 相较原项目的改动
