@@ -1,65 +1,82 @@
 # DeepSeek Monitor Windows
 
-Windows 桌面端 DeepSeek API 用量监控工具。实时查看账户余额、当月消费、模型 Token 用量和最近 7 天用量趋势，系统托盘常驻。
+DeepSeek Monitor Windows 是一个面向 Windows 的 DeepSeek API 用量监控桌面应用，用于查看账户余额、当月消费、模型 Token 用量和最近用量趋势。
 
-> Fork 自 [Joyi-code/DeepSeekMonitorWindows](https://github.com/Joyi-code/DeepSeekMonitorWindows)（v1.1.0），在此基础上做了功能增强。
+> 本项目 fork 自 [Joyi-code/DeepSeekMonitorWindows](https://github.com/Joyi-code/DeepSeekMonitorWindows)，感谢原作者 [Joyi-code](https://github.com/Joyi-code) 的开源工作。
+>
+> 原项目又基于 [JayHome137/deepseek-monitor](https://github.com/JayHome137/DeepSeekMonitor) 的开源项目思路做 Windows 系统适配。
 
-## 预览
+郑重声明：本项目不是 DeepSeek 官方产品。
+
+## 页面截图
 
 ### 仪表盘
 
-![仪表盘](screenshots/dashboard.png)
-
-### 主题切换
-
-| 暗色 | 亮色 | 海洋蓝 | 森林绿 | 暖金日落 | 樱花粉 | 薰衣草紫 |
-|------|------|--------|--------|----------|--------|----------|
-| ![暗色](screenshots/theme-dark.png) | ![亮色](screenshots/theme-light.png) | ![海洋蓝](screenshots/theme-ocean.png) | ![森林绿](screenshots/theme-forest.png) | ![暖金日落](screenshots/theme-sunset.png) | ![樱花粉](screenshots/theme-sakura.png) | 待补充 |
-
-点击仪表盘 Shirt 按钮循环切换 7 套主题。
+![DeepSeek Monitor Windows 仪表盘](screenshots/dashboard.png)
 
 ### 设置页
 
-![设置](screenshots/settings.png)
+![DeepSeek Monitor Windows 设置页](screenshots/settings.png)
+
+### 主题切换
+
+点击仪表盘 Shirt 按钮循环切换 7 套主题。
+
+![DeepSeek Monitor Windows 暗色主题](screenshots/theme-dark.png)
+
+![DeepSeek Monitor Windows 亮色主题](screenshots/theme-light.png)
+
+![DeepSeek Monitor Windows 海洋蓝主题](screenshots/theme-ocean.png)
+
+![DeepSeek Monitor Windows 森林绿主题](screenshots/theme-forest.png)
+
+![DeepSeek Monitor Windows 暖金日落主题](screenshots/theme-sunset.png)
+
+![DeepSeek Monitor Windows 樱花粉主题](screenshots/theme-sakura.png)
+
+*薰衣草紫主题截图待补充*
 
 ## 相较原项目的改动
 
 ### 7 主题切换
 
-原项目只有暗色/亮色两套。本 fork 扩展到 7 套完整主题，点击 Shirt 按钮循环切换：
-
-- 暗色系：暗色默认、海洋蓝、森林绿、暖金日落
-- 亮色系：亮色、樱花粉、薰衣草紫
-
-每套主题独立设计了面板底色、卡片渐变、品牌强调色、Flash/Pro 模型色、图表分段色，切换时所有元素同步变化。
+原项目仅暗色/亮色两套主题。本 fork 扩展为 7 套，点击 Shirt 按钮循环切换。每套主题独立设计了面板底色、卡片渐变、品牌强调色、Flash/Pro 模型色、图表分段色，所有视觉元素同步变化。
 
 ### 余额告警
 
-新增余额告警功能，在设置页配置告警线后生效：
+设置页可配置余额告警线。账户余额低于阈值时，仪表盘余额卡片状态变为橙色「余额偏低」，并弹出告警提示条。7 套主题均有独立告警配色——暖金日落主题用红色与橙棕背景拉开对比，亮色系用深红文字保证可读性，暗色系用亮橙突出显示。
 
-- 账户余额低于设定值时，仪表盘余额卡片状态变为**橙色「余额偏低」**
-- 弹出告警提示条，显示当前余额与告警线对比
-- 7 套主题各有独立告警配色——暖金日落主题用红色告警避免与橙棕背景融合，亮色系用深红文字确保可读，暗色系用亮橙
+### 缓存命中率
 
-### 缓存命中率精确显示
-
-原项目命中率四舍五入到整数，本 fork 精确到**小数点后两位**（如 99.87%），更精细。
+命中率精确到小数点后两位，比原项目的四舍五入整数更精细。
 
 ## 功能
 
-- 查询 DeepSeek API 账户余额（官方接口）
-- 当月消费、V4 Flash / V4 Pro Token 用量、请求数
-- 缓存命中率精确显示
-- 最近 7 天消费趋势堆叠柱状图（命中/未命中/输出明细悬停查看）
-- 7 主题循环切换
-- 余额告警（可配置阈值）
-- 系统托盘常驻，不占任务栏
-- 自动刷新（1 分钟 ~ 1 小时可调）
-- API Key 本地存储，不上传
+- 查询 DeepSeek API 账户余额，使用 DeepSeek 官方余额接口
+- 查询 DeepSeek 平台用量数据，包括当月消费、模型 Token 总量、请求数、缓存命中、缓存未命中和输出 Token
+- 支持 V4 Flash 与 V4 Pro 两类模型用量展示
+- 缓存命中率精确到小数点后两位
+- 支持最近 7 天消费趋势图和模型详情页
+- **7 主题循环切换**（暗色 / 亮色 / 海洋蓝 / 森林绿 / 暖金日落 / 樱花粉 / 薰衣草紫）
+- **余额告警**（可配置阈值，仪表盘实时提醒）
+- 支持 Windows 托盘入口，主窗口默认不进入任务栏
+- 支持 API Key 保存、清除和余额验证
+- 支持用量 Token 自动同步和手动粘贴兜底
 
-## 本地运行
+## 系统要求
 
-```bash
+- Windows 10 或 Windows 11
+- Microsoft Edge WebView2 Runtime（Windows 11 通常已内置）
+
+## 安装
+
+从 [Releases](https://github.com/Muanyan-mjq/DeepSeekMonitor-Windows/releases) 下载最新 `.exe` 安装包运行即可。
+
+## 本地开发
+
+```powershell
+git clone https://github.com/Muanyan-mjq/DeepSeekMonitor-Windows.git
+cd DeepSeekMonitorWindows
 npm install
 npx tauri dev
 ```
@@ -68,11 +85,11 @@ npx tauri dev
 
 ## 构建安装包
 
-```bash
+```powershell
 npm run build
 ```
 
-产物位于 `src-tauri/target/release/bundle/nsis/`，生成 `.exe` 安装程序。也可从 [Releases](https://github.com/Muanyan-mjq/DeepSeekMonitor-Windows/releases) 下载预构建版本。
+产物位于 `src-tauri/target/release/bundle/nsis/`。
 
 ## 技术栈
 
