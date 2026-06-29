@@ -14,12 +14,14 @@ DeepSeek Monitor Windows 是一个面向 Windows 的 DeepSeek API 用量监控�
 
 <p>
 <img src="screenshots/theme-light.png" width="200" height="320">
-<img src="screenshots/theme-dark.png" width="200" height="320">
 <img src="screenshots/theme-sunset.png" width="200" height="320">
+<img src="screenshots/theme-dark.png" width="200" height="320">
 <img src="screenshots/theme-ocean.png" width="200" height="320">
 <img src="screenshots/dashboard.png" width="200" height="320">
 <img src="screenshots/theme-forest.png" width="200" height="320">
 <img src="screenshots/theme-sakura.png" width="200" height="320">
+
+> 如果您有其他喜欢的配色方案，欢迎提交 [Issue](https://github.com/Muanyan-mjq/DeepSeekMonitor-Windows/issues) 或 PR。
 </p>
 
 ## 相较原项目的改动
