@@ -669,7 +669,7 @@ function SettingsPanel({
   const [usageStatus, setUsageStatus] = React.useState("");
   const [usageSyncing, setUsageSyncing] = React.useState(false);
   const [showManualPaste, setShowManualPaste] = React.useState(false);
-  const [appVersion, setAppVersion] = React.useState("1.1.0");
+  const [appVersion, setAppVersion] = React.useState("1.1.1");
   const [pendingBalanceThreshold, setPendingBalanceThreshold] = React.useState<number | null>(null);
   const configPath = config?.configPath ?? "%APPDATA%\\DeepSeekMonitorWindows\\config.json";
 
@@ -691,7 +691,7 @@ function SettingsPanel({
   React.useEffect(() => {
     void getVersion()
       .then(setAppVersion)
-      .catch(() => setAppVersion("1.1.0"));
+      .catch(() => setAppVersion("1.1.1"));
   }, []);
 
   const refreshUsageAfterToken = React.useCallback(
